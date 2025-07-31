@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>AppBana - Owned by Bhavesh</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #1e1e1e;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 20px;
+      background-color: #121212;
+      border-bottom: 2px solid #333;
+    }
+
+    .header img {
+      height: 32px;
+      width: 32px;
+    }
+
+    .header h1 {
+      margin: 0;
+      font-size: 20px;
+      color: #00bcd4;
+    }
+
+    .editor-container {
+      display: flex;
+      flex: 1;
+      gap: 10px;
+      padding: 10px;
+    }
+
+    .editor {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      border: 2px solid transparent;
+      border-radius: 6px;
+      transition: border 0.2s;
+    }
+
+    .editor:hover {
+      border: 2px solid #00bcd4;
+    }
+
+    textarea {
+      flex: 1;
+      resize: none;
+      padding: 10px;
+      background-color: #2d2d2d;
+      color: #f8f8f2;
+      font-family: monospace;
+      font-size: 14px;
+      border: none;
+      border-radius: 5px;
+      outline: none;
+    }
+
+    label {
+      margin-bottom: 5px;
+      padding-left: 5px;
+    }
+
+    .buttons {
+      display: flex;
+      gap: 10px;
+      padding: 10px;
+    }
+
+    button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #007acc;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #005fa3;
+    }
+
+    .output-container {
+      flex: 1;
+      border-top: 1px solid #444;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background-color: white;
+    }
+
+    .modal {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      z-index: 10;
+    }
+
+    .modal-content {
+      background-color: #2d2d2d;
+      padding: 20px;
+      border-radius: 10px;
+      width: 320px;
+      color: white;
+      position: relative;
+    }
+
+    .modal-content input {
+      width: 100%;
+      padding: 8px;
+      margin-bottom: 10px;
+      background-color: #444;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+    }
+
+    .modal-content button {
+      background-color: #00bcd4;
+    }
+
+    .modal-content button:hover {
+      background-color: #0097a7;
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 5px;
+      right: 10px;
+      font-size: 20px;
+      color: #ccc;
+      cursor: pointer;
+    }
+
+    .file-list {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .file-item {
+      background-color: #444;
+      padding: 8px;
+      border-radius: 5px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+    }
+
+    .file-name {
+      flex: 1;
+      cursor: pointer;
+    }
+
+    .file-delete {
+      margin-left: 10px;
+      color: red;
+      cursor: pointer;
+    }
+    .logo-banner {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0px;
+  background-color: #121212;
+  border-bottom: 2px solid #333;
+}
+
+.logo-banner img {
+  height: 80px;
+  width: auto;
+  opacity: 0.95;
+}
+
+  </style>
+</head>
+<body>
+<div class="logo-banner">
+  <img src="logo.png" alt="AppBana Logo">
+</div>
+
+  <div class="editor-container">
+    <div class="editor">
+      <label>HTML</label>
+      <textarea id="html" placeholder="Write HTML here..."></textarea>
+    </div>
+    <div class="editor">
+      <label>CSS</label>
+      <textarea id="css" placeholder="Write CSS here..."></textarea>
+    </div>
+    <div class="editor">
+      <label>JavaScript</label>
+      <textarea id="js" placeholder="Write JavaScript here..."></textarea>
+    </div>
+  </div>
+
+  <div class="buttons">
+    <button onclick="runCode()">Run ▶️</button>
+    <button onclick="openSaveModal()">Save 💾</button>
+    <button onclick="openLocateModal()">Locate 📂</button>
+    <button onclick="openInNewTab()">New Tab 🌐</button>
+
+  </div>
+
+  <div class="output-container">
+    <iframe id="output"></iframe>
+  </div>
+
+  <!-- Save Modal -->
+  <div class="modal" id="saveModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('saveModal')">❌</span>
+      <input type="text" id="userName" placeholder="Your Name">
+      <input type="text" id="fileName" placeholder="File Name">
+      <input type="password" id="filePassword" placeholder="Password">
+      <button onclick="saveCode()">Submit ✅</button>
+    </div>
+  </div>
+
+  <!-- Locate Modal -->
+  <div class="modal" id="locateModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('locateModal')">❌</span>
+      <div class="file-list" id="fileList"></div>
+    </div>
+  </div>
+
+  <!-- Password Prompt -->
+  <div class="modal" id="passwordModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('passwordModal')">❌</span>
+      <label>Enter password for "<span id="selectedFile"></span>"</label>
+      <input type="password" id="loadPassword">
+      <button onclick="loadSelectedFile()">Load File 📄</button>
+    </div>
+  </div>
+
+  <!-- Delete Prompt -->
+  <div class="modal" id="deleteModal">
+    <div class="modal-content">
+      <span class="close-btn" onclick="closeModal('deleteModal')">❌</span>
+      <label>Delete "<span id="deleteFile"></span>"</label>
+      <input type="password" id="deletePassword" placeholder="Enter Password">
+      <button onclick="confirmDelete()">Confirm Delete 🗑️</button>
+    </div>
+  </div>
+
+  <script>
+    const htmlInput = document.getElementById('html');
+    const cssInput = document.getElementById('css');
+    const jsInput = document.getElementById('js');
+    const output = document.getElementById('output');
+
+    function runCode() {
+      const html = htmlInput.value;
+      const css = `<style>${cssInput.value}</style>`;
+      const js = `<script>${jsInput.value}<\/script>`;
+      output.srcdoc = html + css + js;
+    }
+
+    let timeout;
+    function debounceRun() {
+      clearTimeout(timeout);
+      timeout = setTimeout(runCode, 300);
+    }
+
+    htmlInput.addEventListener('input', debounceRun);
+    cssInput.addEventListener('input', debounceRun);
+    jsInput.addEventListener('input', debounceRun);
+
+    function openSaveModal() {
+      document.getElementById('saveModal').style.display = 'flex';
+    }
+
+    function openLocateModal() {
+      const list = document.getElementById('fileList');
+      list.innerHTML = '';
+      for (let key in localStorage) {
+        if (key.startsWith('savedFile_')) {
+          const file = key.replace('savedFile_', '');
+          const div = document.createElement('div');
+          div.className = 'file-item';
+
+          const nameSpan = document.createElement('span');
+          nameSpan.className = 'file-name';
+          nameSpan.innerText = file;
+          nameSpan.onclick = () => promptPassword(file);
+
+          const del = document.createElement('span');
+          del.className = 'file-delete';
+          del.innerText = '🗑️';
+          del.onclick = () => promptDelete(file);
+
+          div.appendChild(nameSpan);
+          div.appendChild(del);
+          list.appendChild(div);
+        }
+      }
+      document.getElementById('locateModal').style.display = 'flex';
+    }
+
+    function closeModal(id) {
+      document.getElementById(id).style.display = 'none';
+    }
+
+    function saveCode() {
+      const name = document.getElementById('userName').value;
+      const filename = document.getElementById('fileName').value;
+      const password = document.getElementById('filePassword').value;
+      if (!name || !filename || !password) {
+        alert("Please fill all fields.");
+        return;
+      }
+      const data = {
+        user: name,
+        password: password,
+        html: htmlInput.value,
+        css: cssInput.value,
+        js: jsInput.value
+      };
+      localStorage.setItem("savedFile_" + filename, JSON.stringify(data));
+      alert("File saved!");
+      closeModal('saveModal');
+    }
+
+    let selectedFile = '';
+    function promptPassword(file) {
+      selectedFile = file;
+      document.getElementById('selectedFile').innerText = file;
+      document.getElementById('loadPassword').value = '';
+      closeModal('locateModal');
+      document.getElementById('passwordModal').style.display = 'flex';
+    }
+
+    function loadSelectedFile() {
+      const pass = document.getElementById('loadPassword').value;
+      const data = JSON.parse(localStorage.getItem('savedFile_' + selectedFile));
+      if (data && data.password === pass) {
+        htmlInput.value = data.html;
+        cssInput.value = data.css;
+        jsInput.value = data.js;
+        runCode();
+        alert("Loaded!");
+        closeModal('passwordModal');
+      } else {
+        alert("Wrong password.");
+      }
+    }
+
+    let fileToDelete = '';
+    function promptDelete(file) {
+      fileToDelete = file;
+      document.getElementById('deleteFile').innerText = file;
+      document.getElementById('deletePassword').value = '';
+      closeModal('locateModal');
+      document.getElementById('deleteModal').style.display = 'flex';
+    }
+
+    function confirmDelete() {
+      const pass = document.getElementById('deletePassword').value;
+      const data = JSON.parse(localStorage.getItem('savedFile_' + fileToDelete));
+      if (data && data.password === pass) {
+        localStorage.removeItem('savedFile_' + fileToDelete);
+        alert("File deleted.");
+        closeModal('deleteModal');
+      } else {
+        alert("Wrong password.");
+      }
+    }
+    function openInNewTab() {
+  const html = htmlInput.value || '';
+  const cssCode = cssInput.value || '';
+  const jsCode = jsInput.value || '';
+
+  const hasBackground = /background(-color|-image)?\s*:/i.test(cssCode);
+  const fallbackCSS = `
+    html, body {
+      height: 100%;
+      margin: 0;
+      padding: 0;
+      ${hasBackground ? '' : `
+        background: #121212 url('logo.png') center center no-repeat;
+        background-size: 200px auto;
+      `}
+    }
+  `;
+
+  const finalHTML = `
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <title>Bhavesh.com</title>
+      <style>${fallbackCSS}</style>
+      <style>${cssCode}</style>
+    </head>
+    <body>
+      ${html}
+      <script>
+        ${jsCode.replace(/<\/script>/gi, '<\\/script>')}
+      <\/script>
+    </body>
+    </html>
+  `;
+
+  const blob = new Blob([finalHTML], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  window.open(url, '_blank');
+}
+  </script>
+</body>
+</html>
